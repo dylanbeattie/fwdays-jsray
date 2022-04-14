@@ -1,6 +1,11 @@
-import './style.css'
+import * as Greeter from './greeter.js';
 
-document.querySelector('#app').innerHTML = `
-  <h1>Hello Vite!</h1>
-  <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-`
+let greeter = new Greeter.Greeter('World');
+let greeting = greeter.greet();
+
+document.querySelector('#greeting').innerHTML = `
+  <h1>${greeting}</h1>
+  <p>(If you can read this, JS modules are working)</p>
+  <img src="favicon.svg" style="width: 200px; height: 200px;" />
+  <p><small>${new Date()}</small></p>
+`;
