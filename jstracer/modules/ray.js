@@ -17,6 +17,6 @@ export class Ray {
         });
         if (distanceToNearestShape == Infinity) return scene.background;
         let point = this.start.add(this.direction.scale(distanceToNearestShape));
-        return nearestIntersectingShape.getColorAt(point, this.direction, scene);
+        return nearestIntersectingShape.getColorAt(point, scene);
     }
 }

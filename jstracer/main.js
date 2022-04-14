@@ -1,10 +1,8 @@
-import { Tracer } from './modules/tracer.js';
-import * as ExampleScenes from './scenes/examples.js';
-
 let canvas = document.getElementById("my-canvas");
 let ctx = canvas.getContext('2d');
-
-let tracer = new Tracer(canvas.width, canvas.height);
+let renderButton = document.getElementById('render-button');
+let cancelButton = document.getElementById('cancel-button');
+let stepInput = document.getElementById('step-input');
 
 function paint(x, y, width, height, color) {
     var rgb = `rgb(${color.r},${color.g},${color.b})`;
@@ -12,9 +10,42 @@ function paint(x, y, width, height, color) {
     ctx.fillRect(x, y, width, height);
 }
 
-export function render() {
-    let scene = ExampleScenes.ColoredSpheres();
-    tracer.trace(scene, paint);
+function handleMessageFromWorker(message) {
+    let data = message.data;
+    switch (data.what) {
+        case 'fillRect':
+            let color = { r: data.r, g: data.g, b: data.b };
+            paint(data.x, data.y, data.width, data.height, color);
+            break;
+        case 'finished':
+            updateStatus(false);
+            break;
+    }
 }
 
+export function render() {
+    let step = parseInt(stepInput.value) ?? 1;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let worker = new Worker('worker.js', { type: 'module' });
+    worker.addEventListener('message', handleMessageFromWorker);
+    cancelButton.addEventListener("click", function () {
+        worker.terminate();
+        updateStatus(false);
+    });
+    worker.postMessage({
+        command: 'start',
+        width: canvas.width,
+        height: canvas.height,
+        step: step
+    });
+    updateStatus(true);
+}
+
+
+function updateStatus(running) {
+    renderButton.disabled = running;
+    cancelButton.disabled = !running;
+}
+
+renderButton.addEventListener("click", render);
 render()
