@@ -40,6 +40,8 @@ export class Color extends Material {
 
     getColorAt = _ => this;
 
+    get rgba() { return [this.r, this.g, this.b, 0xFF] };
+
     /** Parse an HTML color string like #fff, #abc123 or rgb(10,20,30), 
      * and return an array of [r,g,b,a] values */
     parseHtmlColor = str => {
