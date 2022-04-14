@@ -38,6 +38,8 @@ export class Color extends Material {
     static Black = new Color(0, 0, 0);
     static Gray50 = new Color(127, 127, 127);
 
+    getColorAt = _ => this;
+
     /** Parse an HTML color string like #fff, #abc123 or rgb(10,20,30), 
      * and return an array of [r,g,b,a] values */
     parseHtmlColor = str => {
